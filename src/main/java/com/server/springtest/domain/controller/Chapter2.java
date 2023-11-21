@@ -1,7 +1,7 @@
 package com.server.springtest.domain.controller;
 
 import com.server.springtest.domain.entity.Question;
-import com.server.springtest.domain.repository.QuestionRepository;
+import com.server.springtest.domain.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +13,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class Chapter2 {
-    private final QuestionRepository questionRepository;
+    private final QuestionService questionService;
 
     @GetMapping("/")
     public String root() {
@@ -27,8 +27,9 @@ public class Chapter2 {
     }
 
     @GetMapping("/question/list")
-    public String list(Model model){
-        List<Question> questionList = this.questionRepository.findAll();
+    @ResponseBody
+    public String list(Model model) {
+        List<Question> questionList = this.questionService.getList();
         model.addAttribute("questionList", questionList);
         return "question_list";
     }

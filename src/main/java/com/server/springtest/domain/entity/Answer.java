@@ -2,35 +2,42 @@ package com.server.springtest.domain.entity;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.server.springtest.domain.dto.AnswerDTO;
 import jakarta.persistence.*;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
-@Setter
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
     private Integer id;
 
     @Column(columnDefinition = "TEXT")
+    @JsonProperty("content")
     private String content;
 
+    @JsonProperty("createDate")
     private LocalDateTime createDate;
 
+    @JsonProperty("question")
+    @JsonIgnore
     @ManyToOne
     private Question question;
 
-    @Builder
-    public Answer(Integer id, String content, LocalDateTime createDate, Question question){
-        this.id = id;
-        this.content = content;
-        this.createDate = createDate;
-        this.question = question;
+    @Override
+    public String toString() {
+        return "Answer{" +
+                "id=" + id +
+                ", content='" + content + '\'' +
+                ", createDate=" + createDate;
     }
+
 }

@@ -9,7 +9,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -25,15 +29,28 @@ public class QuestionController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<QuestionDTO>> list() {
+    public ResponseEntity<Map<String,Object>> list() {
         List<QuestionDTO> questionList = questionService.getList();
-        System.out.println("questionList"+questionList);
-        return ResponseEntity.ok().body(questionList);
+
+        List<Map<String, Object>> simplifiedQuestionList = questionList.stream().map(question -> {
+            Map<String, Object> questionMap = new HashMap<>();
+            questionMap.put("id", question.getId());
+            questionMap.put("subject", question.getSubject());
+            questionMap.put("content", question.getContent());
+            questionMap.put("createDate", question.getCreateDate());
+            return questionMap;
+        }).collect(Collectors.toList());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("questions", new ArrayList<>(simplifiedQuestionList));
+
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping(value = "/detail/{id}")
     public ResponseEntity<?> detail(@PathVariable("id") Integer id) {
         Question question = questionService.getQuestion(id);
+        System.out.println(question);
         return ResponseEntity.ok(question);
     }
 }
